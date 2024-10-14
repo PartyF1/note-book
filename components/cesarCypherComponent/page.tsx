@@ -1,9 +1,12 @@
 //import style from './cesar.module.scss';
 
 export const CesarСypherComponent = () => {
+    let inputValue, inputRange, result;
     const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
     const shift = (index: number, range: number, alphabet: string[]) => {
+        if (range > alphabet.length) 
+            range %= alphabet.length;
         if (index + range > alphabet.length) {
             return alphabet[index - alphabet.length + range]
         } else if (index + range < 0) {
@@ -14,7 +17,7 @@ export const CesarСypherComponent = () => {
     }
 
     const handleShiftMethod = () => {
-
+        // result = encrypt(inputValue as string, inputRange as number, alphabet);
     }
 
     const encrypt = (text: string, range: number, alphabet: string[]) => {
@@ -34,7 +37,19 @@ export const CesarСypherComponent = () => {
 
     return (
         <div>
-
+            <div>
+                <label>Введите текст</label>
+                <input type="text" ref={inputValue} />
+            </div>
+            <div>
+                <label>Введите сдвиг</label>
+                <input type="number" ref={inputRange} />
+            </div>
+            <div>
+                <label>Введите сдвиг</label>
+                <input ref={result} id="value" disabled/>
+            </div>
+            {/* <button onClick={() => handleShiftMethod()}/> */}
         </div>
     )
 }
