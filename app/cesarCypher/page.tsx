@@ -1,4 +1,4 @@
-import { CesarСypherComponent } from "@/app/components/cesarCypherComponent/page"
+import { CesarСypherComponent } from "@/components/cesarCypherComponent/CesarCypherComponent"
 
 export default function CesarCypher() {
     return (
