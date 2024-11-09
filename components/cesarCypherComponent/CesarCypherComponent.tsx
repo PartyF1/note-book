@@ -2,8 +2,13 @@
 import { useRef, useState } from "react";
 import style from './style.module.scss';
 import { ALPHABETS } from "@/dictionaries/alphabets";
+import { METHODS } from "@/enums/methods";
 
-export const CesarСypherComponent = () => {
+type Method = {
+    method: METHODS
+}
+
+export const CesarСypherComponent = ({ method }: Method) => {
     const inputValue = useRef<HTMLInputElement>(null);
     const inputRange = useRef<HTMLInputElement>(null);
     const [result, setResult] = useState('');
@@ -21,7 +26,7 @@ export const CesarСypherComponent = () => {
         }
     }
 
-    const alphabet = selectedAlphabet === 'latin'? ALPHABETS.EN: ALPHABETS.RU;
+    const alphabet = selectedAlphabet === 'latin' ? ALPHABETS.EN : ALPHABETS.RU;
 
     const handleSubmit = () => {
         setResult(encrypt(inputValue.current!.value, Number(inputRange.current?.value), alphabet));
@@ -38,39 +43,48 @@ export const CesarСypherComponent = () => {
                     result += newChar;
                 }
             } else {
-              result += char;  
-            }       
+                result += char;
+            }
         }
         return result;
     }
 
     return (
         <div className={style.container}>
-            <div>
-                <label htmlFor="text" className={style.label}>Введите текст</label>
-                <input type="text" id="text" ref={inputValue} required className={style.inputText} />
-            </div>
-            <div>
-                <label htmlFor="range" className={style.label}>Введите сдвиг</label>
-                <input type="number" id="range" ref={inputRange} required className={style.inputRange} />
-            </div>
-            <div>
-                <label htmlFor="dropdown" className={style.label}>Выберите алфавит</label>
-                <select
-                    id="dropdown"
-                    className={style.dropdown}
-                    value={selectedAlphabet}
-                    onChange={(e) => setSelectedAlphabet(e.target.value)}
-                >
-                    <option value="latin">Латиница</option>
-                    <option value="cyrillic">Кириллица</option>
-                </select>
-            </div>
-            <div>
-                <label className={style.label}>Итоговый результат</label>
-                <textarea value={result} disabled className={style.textarea} />
-            </div> 
-            <button onClick={handleSubmit} className={style.button}>Нажми</button>
+            {method === METHODS.ENCRYPT &&
+                <div>
+                    <div>
+                        <label htmlFor="text" className={style.label}>Введите текст</label>
+                        <input type="text" id="text" ref={inputValue} required className={style.inputText} />
+                    </div>
+                    <div>
+                        <label htmlFor="range" className={style.label}>Введите сдвиг</label>
+                        <input type="number" id="range" ref={inputRange} required className={style.inputRange} />
+                    </div>
+                    <div>
+                        <label htmlFor="dropdown" className={style.label}>Выберите алфавит</label>
+                        <select
+                            id="dropdown"
+                            className={style.dropdown}
+                            value={selectedAlphabet}
+                            onChange={(e) => setSelectedAlphabet(e.target.value)}
+                        >
+                            <option value="latin">Латиница</option>
+                            <option value="cyrillic">Кириллица</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className={style.label}>Итоговый результат</label>
+                        <textarea value={result} disabled className={style.textarea} />
+                    </div>
+                    <button onClick={handleSubmit} className={style.button}>Нажми</button>
+                </div>
+            }
+            {method === METHODS.HACK &&
+                <div>
+                    
+                </div>
+            }
         </div>
     )
 }
