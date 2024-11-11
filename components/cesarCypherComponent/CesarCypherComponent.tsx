@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import style from './style.module.scss';
 import { ALPHABETS } from "@/dictionaries/alphabets";
 import { METHODS } from "@/enums/methods";
@@ -14,57 +14,49 @@ export const CesarСypherComponent = ({ method }: Method) => {
     const [result, setResult] = useState('');
     const [selectedAlphabet, setSelectedAlphabet] = useState('latin');
 
-    const shift = (index: number, range: number, alphabet: string[]) => {
-        if (range > alphabet.length)
-            range %= alphabet.length;
-        if (index + range >= alphabet.length) {
-            return alphabet[index - alphabet.length + range]
-        } else if (index + range < 0) {
-            return alphabet[alphabet.length - index + range]
-        } else {
-            return alphabet[index + range]
-        }
+    const handleSubmitEncription = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const response = await fetch(`/api/cesarCypher/encript`, {
+            method: 'POST',
+            body: JSON.stringify({
+                text: inputValue.current?.value,
+                range: Number(inputRange.current?.value),
+                alphabet: selectedAlphabet
+            }),
+        });
+        const { data } = await response.json();
+        setResult(data);
     }
 
-    const alphabet = selectedAlphabet === 'latin' ? ALPHABETS.EN : ALPHABETS.RU;
-
-    const handleSubmit = () => {
-        setResult(encrypt(inputValue.current!.value, Number(inputRange.current?.value), alphabet));
-    }
-
-    const encrypt = (text: string, range: number, alphabet: string[]) => {
-        let result = '';
-        for (const char of text) {
-            if (alphabet.includes(char.toLowerCase())) {
-                const newChar = shift(alphabet.findIndex(elem => elem === char.toLowerCase()), range, alphabet)
-                if (char.toUpperCase() === char) {
-                    result += newChar.toUpperCase()
-                } else {
-                    result += newChar;
-                }
-            } else {
-                result += char;
-            }
-        }
-        return result;
+    const handleSubmitHack = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const response = await fetch(`/api/cesarCypher/hack`, {
+            method: 'POST',
+            body: JSON.stringify({
+                text: inputValue.current?.value,
+            }),
+        });
+        const { data } = await response.json();
+        setResult(data);
     }
 
     return (
         <div className={style.container}>
             {method === METHODS.ENCRYPT &&
-                <div>
+                <form onSubmit={handleSubmitEncription}>
                     <div>
                         <label htmlFor="text" className={style.label}>Введите текст</label>
-                        <input type="text" id="text" ref={inputValue} required className={style.inputText} />
+                        <input type="text" id="text" name="text" ref={inputValue} required className={style.inputText} />
                     </div>
                     <div>
                         <label htmlFor="range" className={style.label}>Введите сдвиг</label>
-                        <input type="number" id="range" ref={inputRange} required className={style.inputRange} />
+                        <input type="number" id="range" name="range" ref={inputRange} required className={style.inputRange} />
                     </div>
                     <div>
                         <label htmlFor="dropdown" className={style.label}>Выберите алфавит</label>
                         <select
                             id="dropdown"
+                            name="alphabet"
                             className={style.dropdown}
                             value={selectedAlphabet}
                             onChange={(e) => setSelectedAlphabet(e.target.value)}
@@ -73,18 +65,23 @@ export const CesarСypherComponent = ({ method }: Method) => {
                             <option value="cyrillic">Кириллица</option>
                         </select>
                     </div>
-                    <div>
-                        <label className={style.label}>Итоговый результат</label>
-                        <textarea value={result} disabled className={style.textarea} />
-                    </div>
-                    <button onClick={handleSubmit} className={style.button}>Нажми</button>
-                </div>
+
+                    <button type="submit" className={style.button}>Нажми</button>
+                </form>
             }
             {method === METHODS.HACK &&
-                <div>
-                    
-                </div>
+                <form onSubmit={handleSubmitHack}>
+                    <div>
+                        <label htmlFor="text" className={style.label}>Введите текст</label>
+                        <input type="text" id="text" name="text" ref={inputValue} required className={style.inputText} />
+                    </div>
+                    <button type="submit" className={style.button}>Нажми</button>
+                </form>
             }
+            <div>
+                <label className={style.label}>Итоговый результат</label>
+                <textarea value={result} disabled className={style.textarea} />
+            </div>
         </div>
     )
 }
