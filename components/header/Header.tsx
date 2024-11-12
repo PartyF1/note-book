@@ -6,6 +6,7 @@ const Header = () => {
         <header className={style.header}>
             <Link className={style.link} href='/'>Главная</Link>
             <Link className={style.link} href='/cesarCypher'>Шифр Цезаря</Link>
+            <Link className={style.link} href='/ADFGVX'>ADFGVX</Link>
         </header>
     )
 }
