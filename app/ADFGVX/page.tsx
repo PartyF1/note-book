@@ -5,7 +5,8 @@ export default function Encript() {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const result = await fetch('/api/ADFGVX/encript', {
-            method: 'POST'
+            method: 'POST', 
+            body: JSON.stringify({keyWord: 'key', polybiusKey: 'key', text: 'Nine tail'})
         })
     }
 
